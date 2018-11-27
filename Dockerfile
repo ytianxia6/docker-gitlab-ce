@@ -19,6 +19,7 @@ RUN set -xe \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
+	&& apt-get upgrade -yqq \
     && apt-get install -yqq lsb-release patch nodejs python build-essential yarn cmake
 
 RUN set -xe \
@@ -53,11 +54,9 @@ RUN set -xe \
     && export WEBPACK_REPORT=true \
     && export NO_COMPRESSION=true \
     && export NO_PRIVILEGE_DROP=true \
-    && export NODE_OPTIONS=--max-old-space-size=4086 \
-    && yarn install --frozen-lockfile \
-    && bin/bundle install --frozen \
-    && bin/rake gettext:compile \
-    && bin/rake gitlab:assets:compile
+    && export NODE_OPTIONS=--max-old-space-size=4086 
+
+
 
 RUN set -xe \
     && echo " # Cleaning ..." \
