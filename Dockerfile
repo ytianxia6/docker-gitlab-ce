@@ -4,7 +4,7 @@
 FROM gitlab/gitlab-ce:11.4.0-ce.0 as builder
 
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GIT_ZH=https://gitlab.com/xhang/gitlab.git
+ENV GITLAB_GIT_ZH=http://192.168.1.13:8080/scm/git/gitlab
 ENV GITLAB_VER=11.4.7
 
 # Reference:
@@ -95,7 +95,7 @@ ENV TZ=Asia/Shanghai
 
 ENV GITLAB_VERSION=v${GITLAB_VER}
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GIT_ZH=https://gitlab.com/xhang/gitlab.git
+ENV GITLAB_GIT_ZH=http://192.168.1.13:8080/scm/git/gitlab
 ENV GITLAB_GIT_COMMIT_UPSTREAM=v${GITLAB_VER}
 ENV GITLAB_GIT_COMMIT_ZH=v${GITLAB_VER}-zh
 
