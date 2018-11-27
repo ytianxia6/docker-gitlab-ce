@@ -79,7 +79,9 @@ RUN set -xe \
 ######################
 #  Production Stage  #
 ######################
-FROM gitlab/gitlab-ce:${GITLAB_VER}-ce.0 as production
+FROM gitlab/gitlab-ce:11.4.7-ce.0 as production
+
+ENV GITLAB_VER=11.4.7
 
 RUN set -xe \
     && export DEBIAN_FRONTEND=noninteractive \
