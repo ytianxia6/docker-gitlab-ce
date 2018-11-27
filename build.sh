@@ -1,3 +1,3 @@
 #! /bin/bash
 
-docker build --no-cache --rm -t beginor/gitlab-ce:11.3.0-ce.0 .
+docker build --no-cache --rm -t yhl/gitlab-ce:11.4.7-ce.0 .
