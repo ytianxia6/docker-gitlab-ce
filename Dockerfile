@@ -1,10 +1,10 @@
 #####################
 #  Building Stage   #
 #####################
-FROM gitlab/gitlab-ce:11.4.0-ce.0 as builder
+FROM gitlab/gitlab-ce:11.4.7-ce.0 as builder
 
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GIT_ZH=https://gitlab.com/xhang/gitlab.git
+ENV GITLAB_GIT_ZH=https://gitee.com/ytianxia6/gitlab.git
 ENV GITLAB_VER=11.4.7
 
 # Reference:
@@ -24,8 +24,12 @@ RUN set -xe \
 RUN set -xe \
     && echo " # Generating translation patch ..." \
     && cd /tmp \
-    && git clone ${GITLAB_GIT_ZH} gitlab \
+    && git clone --depth 1 ${GITLAB_GIT_ZH} gitlab \
     && cd gitlab \
+	&& git remote set-branches origin 'v${GITLAB_VER}-zh' \
+	&& git fetch --depth 1 origin v${GITLAB_VER}-zh \
+	&& git remote set-branches origin 'v${GITLAB_VER}' \
+	&& git fetch --depth 1 origin v${GITLAB_VER} \
     && export IGNORE_DIRS=':!qa :!spec :!features :!.gitignore :!.gitlab :!locale :!app/assets/ :!vendor/assets/' \
     && git diff --diff-filter=d v${GITLAB_VER}..v${GITLAB_VER}-zh -- . ${IGNORE_DIRS} > ../zh_CN.diff \
     && echo " # Patching ..." \
@@ -95,7 +99,7 @@ ENV TZ=Asia/Shanghai
 
 ENV GITLAB_VERSION=v${GITLAB_VER}
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GIT_ZH=https://gitlab.com/xhang/gitlab.git
+ENV GITLAB_GIT_ZH=https://gitee.com/ytianxia6/gitlab.git
 ENV GITLAB_GIT_COMMIT_UPSTREAM=v${GITLAB_VER}
 ENV GITLAB_GIT_COMMIT_ZH=v${GITLAB_VER}-zh
 
