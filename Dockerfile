@@ -4,8 +4,7 @@
 FROM gitlab/gitlab-ce:11.4.7-ce.0 as builder
 
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GITPATCH_ZH=https://github.com/ytianxia6/gitlab-patch.git
-ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab.git
+ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab-patch.git
 ENV GITLAB_VER=11.4.7
 
 # Reference:
@@ -26,13 +25,11 @@ RUN set -xe \
 RUN set -xe \
     && echo " # Generating translation patch ..." \
     && cd /tmp \
-    && git clone ${GITLAB_GIT_ZH} gitlab \
-	&& git clone -b v${GITLAB_VER} ${GITLAB_GITPATCH_ZH} gitlab-patch \
-    && echo " # Patching ..." \
-    && patch -d ${GITLAB_DIR} -p1 < gitlab-patch/11.4.7-zh.diff \
-    && echo " # Copy assets files ..." \
+	&& git clone -b v${GITLAB_VER} ${GITLAB_GIT_ZH} gitlab \
 	&& cd gitlab \
-    && git checkout v${GITLAB_VER}-zh \
+    && echo " # Patching ..." \
+    && patch -d ${GITLAB_DIR} -p1 < patch.diff \
+    && echo " # Copy assets files ..." \
     && cp -R locale ${GITLAB_DIR}/ \
     && mkdir -p ${GITLAB_DIR}/app \
     && cp -R app/assets ${GITLAB_DIR}/app/ \
@@ -96,8 +93,7 @@ ENV TZ=Asia/Shanghai
 
 ENV GITLAB_VERSION=v${GITLAB_VER}
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
-ENV GITLAB_GITPATCH_ZH=https://github.com/ytianxia6/gitlab-patch.git
-ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab.git
+ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab-patch.git
 ENV GITLAB_GIT_COMMIT_UPSTREAM=v${GITLAB_VER}
 ENV GITLAB_GIT_COMMIT_ZH=v${GITLAB_VER}-zh
 
