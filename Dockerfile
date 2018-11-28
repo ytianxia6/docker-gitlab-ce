@@ -4,6 +4,7 @@
 FROM gitlab/gitlab-ce:11.4.7-ce.0 as builder
 
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
+ENV GITLAB_GITPATCH_ZH=https://github.com/ytianxia6/gitlab-patch.git
 ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab.git
 ENV GITLAB_VER=11.4.7
 
@@ -19,18 +20,18 @@ RUN set -xe \
     && curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
     && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
     && apt-get update \
+	&& apt-get -yqq upgrade \
     && apt-get install -yqq lsb-release patch nodejs python build-essential yarn cmake
 
 RUN set -xe \
     && echo " # Generating translation patch ..." \
     && cd /tmp \
     && git clone ${GITLAB_GIT_ZH} gitlab \
-    && cd gitlab \
-    && export IGNORE_DIRS=':!qa :!spec :!features :!.gitignore :!.gitlab :!locale :!app/assets/ :!vendor/assets/' \
-    && git diff --diff-filter=d v${GITLAB_VER}..v${GITLAB_VER}-zh -- . ${IGNORE_DIRS} > ../zh_CN.diff \
+	&& git clone -b v${GITLAB_VER} ${GITLAB_GITPATCH_ZH} gitlab-patch \
     && echo " # Patching ..." \
-    && patch -d ${GITLAB_DIR} -p1 < ../zh_CN.diff \
+    && patch -d ${GITLAB_DIR} -p1 < gitlab-patch/11.4.7-zh.diff \
     && echo " # Copy assets files ..." \
+	&& cd gitlab \
     && git checkout v${GITLAB_VER}-zh \
     && cp -R locale ${GITLAB_DIR}/ \
     && mkdir -p ${GITLAB_DIR}/app \
@@ -95,6 +96,7 @@ ENV TZ=Asia/Shanghai
 
 ENV GITLAB_VERSION=v${GITLAB_VER}
 ENV GITLAB_DIR=/opt/gitlab/embedded/service/gitlab-rails
+ENV GITLAB_GITPATCH_ZH=https://github.com/ytianxia6/gitlab-patch.git
 ENV GITLAB_GIT_ZH=https://github.com/ytianxia6/gitlab.git
 ENV GITLAB_GIT_COMMIT_UPSTREAM=v${GITLAB_VER}
 ENV GITLAB_GIT_COMMIT_ZH=v${GITLAB_VER}-zh
