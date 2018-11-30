@@ -14,7 +14,8 @@ RUN set -xe \
     && echo " # Preparing ..." \
     && apt-get update \
     && apt-get install -yqq patch sendmail \
-	&& rm -rf /var/lib/apt/lists/*
+	&& rm -rf /var/lib/apt/lists/* \
+	&& ln -s /etc/init.d/sendmail /opt/gitlab/service
 
 RUN set -xe \
     && echo " # Generating translation patch ..." \
