@@ -13,7 +13,8 @@ ENV GITLAB_VER=11.4.7
 RUN set -xe \
     && echo " # Preparing ..." \
     && apt-get update \
-    && apt-get install -yqq patch
+    && apt-get install -yqq patch sendmail \
+	&& rm -rf /var/lib/apt/lists/*
 
 RUN set -xe \
     && echo " # Generating translation patch ..." \
@@ -22,9 +23,4 @@ RUN set -xe \
 	&& cd gitlab \
     && echo " # Patching ..." \
     && patch -d ${GITLAB_DIR} -p1 < patch.diff
-
-RUN set -xe \
-    && echo " # Cleaning ..." \
-    && rm -rf /tmp/gitlab /tmp/*.diff /root/.cache /var/lib/apt/lists/*
-
-
+    && rm -rf /tmp/gitlab /root/.cache
